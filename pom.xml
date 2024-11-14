@@ -55,6 +55,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.sf.jt400</groupId>
+			<artifactId>jt400</artifactId>
+			<version>10.6</version> <!-- Verifica y usa la última versión disponible -->
+		</dependency>
+
 	</dependencies>
 
 	<build>
