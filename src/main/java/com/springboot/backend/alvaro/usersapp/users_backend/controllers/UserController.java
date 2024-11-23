@@ -28,7 +28,6 @@ public class UserController {
         if (result.hasErrors()) {
             return validation(result);
         }
-        user.setId(6L);
         service.insertUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -64,34 +63,6 @@ public class UserController {
     User updateUser(Long id, User user) {
         return null;
     }
-
-    //@PostMapping
-    //public ResponseEntity<?> create(@Valid @RequestBody User user, BindingResult result){
-     //   if (result.hasErrors()){
-     //       return validation(result);
-    //    }
-    //    user.setId(5L);
-    //    return ResponseEntity.status(HttpStatus.CREATED).body(service.save(user));
-    //}
-
-   // @PutMapping("/{id}")
-    //public ResponseEntity<?> update(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id){
-    //    if (result.hasErrors()){
-    //       return validation(result);
-   //     }
-    //    Optional<User> userOptional = service.findById(id);
-   //    if (userOptional.isPresent()){
-    //        User userDb = userOptional.orElseThrow();
-    //        userDb.setEmail(user.getEmail());
-    //        userDb.setLastname(user.getLastname());
-    //        userDb.setName(user.getName());
-    //        userDb.setPassword(user.getPassword());
-    //        userDb.setUsername(user.getUsername());
-    //        return ResponseEntity.ok(service.save(userDb));
-
-    //  }
-    //   return ResponseEntity.notFound().build();
-    //  }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){

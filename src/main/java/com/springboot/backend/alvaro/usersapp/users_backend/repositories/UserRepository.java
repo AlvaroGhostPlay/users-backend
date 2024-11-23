@@ -25,4 +25,9 @@ public interface UserRepository extends CrudRepository<User, Long> {
             "USERNAME = :username, PASSWORD = :password WHERE ID = :id", nativeQuery = true)
     void updateUser(Long id, String name, String lastname, String email, String username, String password);
 
+    @Query(value = "SELECT * FROM PGMAV.USERS ORDER BY ID DESC FETCH FIRST 1 ROWS ONLY", nativeQuery = true)
+    Optional<User> findLastUser();
+
+
+
 }

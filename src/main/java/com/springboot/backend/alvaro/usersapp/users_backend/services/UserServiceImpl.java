@@ -23,6 +23,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void insertUser(User user) {
+        Optional<User> lastUser = repository.findLastUser();
+        // Calcular el siguiente ID (asignar 1 si no hay registros)
+        Long nextId = lastUser.map(u -> u.getId() + 1).orElse(1L);
+
+        // Asignar el ID calculado al nuevo usuario
+        user.setId(nextId);
         repository.insertUser(
                 user.getId(),
                 user.getName(),
