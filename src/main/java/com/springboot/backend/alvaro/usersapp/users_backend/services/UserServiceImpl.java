@@ -2,6 +2,7 @@ package com.springboot.backend.alvaro.usersapp.users_backend.services;
 
 import com.springboot.backend.alvaro.usersapp.users_backend.entities.User;
 import com.springboot.backend.alvaro.usersapp.users_backend.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,8 +15,37 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository repository;
 
+    @Autowired
     public UserServiceImpl(UserRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    @Transactional
+    public void insertUser(User user) {
+        repository.insertUser(
+                user.getId(),
+                user.getName(),
+                user.getLastname(),
+                user.getEmail(),
+                user.getUsername(),
+                user.getPassword()
+        );
+    }
+
+    @Override
+    @Transactional
+    public User updateUser(Long id, User user) {
+        repository.updateUser(
+                id,
+                user.getName(),
+                user.getLastname(),
+                user.getEmail(),
+                user.getUsername(),
+                user.getPassword()
+        );
+        return repository.findById(id).orElseThrow(() ->
+                new RuntimeException("Error: Usuario no encontrado después de la actualización."));
     }
 
     @Override

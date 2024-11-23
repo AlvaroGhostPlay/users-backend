@@ -1,19 +1,35 @@
 package com.springboot.backend.alvaro.usersapp.users_backend.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 import static jakarta.persistence.GenerationType.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "USERS", schema = "PGMAV")
+//@Table(name = "users")
 public class User {
     @Id
+    @Column(name = "ID")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+    @Column(name = "NAME")
+    @NotBlank
     private String name;
+    @Column(name = "LASTNAME")
+    @NotBlank
     private String lastname;
+    @Column(name = "EMAIL")
+    @NotEmpty
+    @Email
     private String email;
+    @Column(name = "USERNAME")
+    @NotBlank
     private String username;
+    @Column(name = "PASSWORD")
+    @NotBlank
     private String password;
 
     public Long getId() {

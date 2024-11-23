@@ -2,14 +2,19 @@ package com.springboot.backend.alvaro.usersapp.users_backend.controllers;
 
 import com.springboot.backend.alvaro.usersapp.users_backend.entities.User;
 import com.springboot.backend.alvaro.usersapp.users_backend.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+@CrossOrigin(origins= {"http://localhost:4200"})
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -18,6 +23,30 @@ public class UserController {
     private UserService service;
 
 
+    @PostMapping
+    public ResponseEntity<?> customInsert(@Valid @RequestBody User user, BindingResult result) {
+        if (result.hasErrors()) {
+            return validation(result);
+        }
+        user.setId(6L);
+        service.insertUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+
+    @PutMapping("{id}")
+    public ResponseEntity<?> customUpdate(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id) {
+        if (result.hasErrors()) {
+            return validation(result);
+        }
+        Optional<User> userOptional = service.findById(id);
+        if (userOptional.isPresent()) {
+            service.updateUser(id, user);
+            User updatedUser = service.updateUser(id, user);
+            return ResponseEntity.ok(updatedUser);
+        }
+        return ResponseEntity.notFound().build();
+    }
     @GetMapping
     public List<User> list(){
         return service.findAll();
@@ -30,31 +59,41 @@ public class UserController {
             return ResponseEntity.ok(userOptional.orElseThrow());
         }
         return ResponseEntity.notFound().build();
-        //return ResponseEntity.notFound().build();
     }
 
-    @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user){
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(user));
+    User updateUser(Long id, User user) {
+        return null;
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user){
-        Optional<User> userOptional = service.findById(id);
-        if (userOptional.isPresent()){
-            User userDb = userOptional.orElseThrow();
-            userDb.setEmail(user.getEmail());
-            userDb.setLastname(user.getLastname());
-            userDb.setName(user.getName());
-            userDb.setPassword(user.getPassword());
-            userDb.setUsername(user.getUsername());
-            return ResponseEntity.ok(service.save(userDb));
+    //@PostMapping
+    //public ResponseEntity<?> create(@Valid @RequestBody User user, BindingResult result){
+     //   if (result.hasErrors()){
+     //       return validation(result);
+    //    }
+    //    user.setId(5L);
+    //    return ResponseEntity.status(HttpStatus.CREATED).body(service.save(user));
+    //}
 
-        }
-        return ResponseEntity.notFound().build();
-    }
+   // @PutMapping("/{id}")
+    //public ResponseEntity<?> update(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id){
+    //    if (result.hasErrors()){
+    //       return validation(result);
+   //     }
+    //    Optional<User> userOptional = service.findById(id);
+   //    if (userOptional.isPresent()){
+    //        User userDb = userOptional.orElseThrow();
+    //        userDb.setEmail(user.getEmail());
+    //        userDb.setLastname(user.getLastname());
+    //        userDb.setName(user.getName());
+    //        userDb.setPassword(user.getPassword());
+    //        userDb.setUsername(user.getUsername());
+    //        return ResponseEntity.ok(service.save(userDb));
 
-    @DeleteMapping("/id")
+    //  }
+    //   return ResponseEntity.notFound().build();
+    //  }
+
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         Optional<User> userOptional = service.findById(id);
         if (userOptional.isPresent()){
@@ -62,5 +101,13 @@ public class UserController {
         return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    private static ResponseEntity<Map<String, String>> validation(BindingResult result) {
+        Map<String, String> errors = new HashMap<>();
+        result.getFieldErrors().forEach(error -> {
+            errors.put(error.getField(),"El campo " + error.getField() + " " +error.getDefaultMessage());
+        });
+        return ResponseEntity.badRequest().body(errors);
     }
 }
