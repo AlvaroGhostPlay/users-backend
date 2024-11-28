@@ -4,6 +4,10 @@ import com.springboot.backend.alvaro.usersapp.users_backend.entities.User;
 import com.springboot.backend.alvaro.usersapp.users_backend.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -20,6 +24,10 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired //Lo mismo que implementar el contructor
+    //public UserController(UserService userService) {
+      //  this.userService = userService;
+    //}
+
     private UserService service;
 
 
@@ -51,6 +59,18 @@ public class UserController {
         return service.findAll();
     }
 
+    //@GetMapping("/page/{page}")
+    //public Page<User> listPageble(@PathVariable Integer page){
+      //  Pageable pageable = PageRequest.of(page, 4);  // O cualquier otro tamaño de página que prefieras
+       // return userService.findAll(pageable);
+    //}
+
+    @GetMapping("/page/{page}")
+    public Page<User> listPageable(@PathVariable Integer page) {
+        Pageable pageable = PageRequest.of(page, 4, Sort.by("id").ascending());
+        return service.findAll(pageable);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<User> show(@PathVariable Long id){
         Optional<User> userOptional = service.findById(id);
@@ -60,9 +80,9 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    User updateUser(Long id, User user) {
-        return null;
-    }
+    //User updateUser(Long id, User user) {
+      //  return null;
+   // }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){

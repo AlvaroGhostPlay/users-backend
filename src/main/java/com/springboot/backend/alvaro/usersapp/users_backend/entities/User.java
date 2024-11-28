@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 import static jakarta.persistence.GenerationType.*;
 
@@ -27,6 +28,7 @@ public class User {
     private String email;
     @Column(name = "USERNAME")
     @NotBlank
+    @Size(min = 6, max = 10)
     private String username;
     @Column(name = "PASSWORD")
     @NotBlank
